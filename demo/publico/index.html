@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Panel de incidencias</title>
+    <link rel="stylesheet" href="estilo.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Panel de incidencias</h1>
+      <p id="modo" class="modo"></p>
+    </header>
+
+    <main>
+      <section aria-labelledby="titulo-listado">
+        <div class="cabecera-listado">
+          <h2 id="titulo-listado">Incidencias</h2>
+          <!-- El contador. La API devuelve `total` (la colección entera) y
+               `datos` (esta página). Cuál de los dos se pinta aquí es el
+               defecto D-02. -->
+          <p id="contador" data-prueba="contador" class="contador"></p>
+        </div>
+
+        <!-- Un sitio para cada estado, y los tres distintos. Una interfaz que
+             usa el mismo hueco para «cargando», «vacío» y «error» obliga a
+             adivinar cuál de los tres está pasando. -->
+        <p id="cargando" data-prueba="cargando" hidden>Cargando incidencias…</p>
+        <p id="vacio" data-prueba="vacio" hidden>No hay incidencias.</p>
+        <p id="fallo" data-prueba="fallo" class="fallo" hidden></p>
+
+        <table id="tabla" data-prueba="tabla" hidden>
+          <thead>
+            <tr>
+              <th scope="col">Id</th>
+              <th scope="col">Título</th>
+              <th scope="col">Prioridad</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Creada</th>
+              <th scope="col">Coste</th>
+            </tr>
+          </thead>
+          <tbody id="filas"></tbody>
+        </table>
+
+        <nav class="paginacion" aria-label="Paginación">
+          <button type="button" id="anterior" data-prueba="anterior">Anterior</button>
+          <span id="pagina" data-prueba="pagina"></span>
+          <button type="button" id="siguiente" data-prueba="siguiente">Siguiente</button>
+        </nav>
+      </section>
+
+      <section aria-labelledby="titulo-alta">
+        <h2 id="titulo-alta">Nueva incidencia</h2>
+        <form id="alta" data-prueba="alta" novalidate>
+          <label for="titulo">Título</label>
+          <input id="titulo" name="titulo" data-prueba="campo-titulo" type="text" />
+
+          <label for="prioridad">Prioridad</label>
+          <select id="prioridad" name="prioridad" data-prueba="campo-prioridad">
+            <option value="BAJA">Baja</option>
+            <option value="MEDIA" selected>Media</option>
+            <option value="ALTA">Alta</option>
+            <option value="CRITICA">Crítica</option>
+          </select>
+
+          <button type="submit" data-prueba="guardar">Guardar</button>
+        </form>
+        <p id="aviso" data-prueba="aviso" class="aviso" hidden></p>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

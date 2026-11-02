@@ -1,0 +1,18 @@
+{
+  "name": "playwright-api-ui",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Pruebas que comparan lo que la interfaz ensena con lo que la API guarda.",
+  "scripts": {
+    "api": "node demo/servidor.js",
+    "pruebas": "playwright test --project=defectuosa",
+    "pruebas:corregida": "playwright test --project=corregida",
+    "informe": "playwright show-report",
+    "tipos": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@types/node": "22.15.3",
+    "typescript": "5.8.3"
+  }
+}

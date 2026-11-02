@@ -1,0 +1,119 @@
+# ============================================================================
+#  Dos trabajos, y los dos tienen que pasar.
+#
+#  `detecta`   — corre contra la pantalla con sus cuatro defectos y exige que
+#                la suite FALLE, con exactamente cuatro escenarios en rojo, y
+#                que sean ESOS cuatro. Si pasara, la suite no estaría
+#                comparando nada.
+#  `no-miente` — corre contra la misma pantalla con los cuatro apagados y
+#                exige que pase entera. Si fallara, las aserciones estarían
+#                inventando desajustes.
+#
+#  Casi todas las suites verifican solo lo segundo. Una suite que nunca ha
+#  visto un rojo que le corresponde no ha demostrado que sirva para algo.
+# ============================================================================
+
+name: interfaz
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  # Sin esto, cada corrida pinta las fechas en la zona del runner y F-01
+  # comprobaría otra cosa. La zona del navegador la fija playwright.config.ts;
+  # esta es la del proceso, para que los mensajes de error se lean igual.
+  TZ: America/Lima
+
+jobs:
+  detecta:
+    name: Detecta los 4 desajustes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      # `chrome` y no `chromium`: la configuración usa el canal del navegador
+      # del sistema para que la suite corra igual en un equipo que ya navega
+      # y en el runner.
+      - run: npx playwright install --with-deps chrome
+
+      - name: Comprobar los tipos
+        run: npx tsc --noEmit
+
+      - name: Correr la suite esperando que falle
+        run: |
+          set +e
+          npx playwright test --project=defectuosa > corrida.log 2>&1
+          CODIGO=$?
+          set -e
+          cat corrida.log
+
+          if [ "$CODIGO" -eq 0 ]; then
+            echo "::error::La suite pasó contra una interfaz con cuatro desajustes."
+            exit 1
+          fi
+
+          # No vale con que falle: tiene que fallar cuatro veces. Tres
+          # significa que alguien debilitó una aserción; cinco, que hay un
+          # desajuste nuevo que nadie ha mirado.
+          FALLOS=$(grep -oE '^ +[0-9]+ failed' corrida.log | tail -1 | grep -oE '[0-9]+')
+          echo "Escenarios en rojo: ${FALLOS:-0}"
+
+          if [ "${FALLOS:-0}" != "4" ]; then
+            echo "::error::Se esperaban 4 escenarios en rojo y hubo ${FALLOS:-0}. Mira docs/05-hallazgos.md."
+            exit 1
+          fi
+
+          # Y que sean ESOS cuatro, uno por defecto. Un rojo en el sitio
+          # equivocado también es una suite rota, y el recuento no lo
+          # distingue: cuatro fallos pueden ser los cuatro buenos o cuatro
+          # casualidades.
+          for CASO in 'L-02' 'F-01' 'E-01' 'A-02'; do
+            if ! grep -q "$CASO" corrida.log; then
+              echo "::error::Faltó $CASO entre los escenarios en rojo. La suite detecta otra cosa."
+              exit 1
+            fi
+          done
+
+          echo "La suite detectó los cuatro desajustes, y solo esos."
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rastros-defectuosa
+          path: test-results/
+          retention-days: 7
+
+  no-miente:
+    name: No inventa desajustes con la interfaz corregida
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+      - run: npx playwright install --with-deps chrome
+
+      - name: Correr la suite esperando que pase entera
+        run: npx playwright test --project=corregida
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: rastros-corregida
+          path: test-results/
+          retention-days: 7

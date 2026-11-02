@@ -1,0 +1,159 @@
+:root {
+  --tinta: #1a1714;
+  --papel: #faf8f5;
+  --borde: #e2dbd2;
+  --acento: #ff6a1a;
+  --rojo: #b3261e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 2rem 1rem 4rem;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--tinta);
+  background: var(--papel);
+  line-height: 1.5;
+}
+
+header,
+main {
+  max-width: 60rem;
+  margin: 0 auto;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  letter-spacing: -0.02em;
+}
+
+.modo {
+  margin: 0.25rem 0 2rem;
+  font-size: 0.8rem;
+  color: #7a6f64;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+h2 {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+section + section {
+  margin-top: 3rem;
+}
+
+.cabecera-listado {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 2px solid var(--tinta);
+  padding-bottom: 0.5rem;
+}
+
+.contador {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  color: #7a6f64;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+th {
+  text-align: left;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #7a6f64;
+  padding: 0.4rem 0.6rem;
+}
+
+td {
+  padding: 0.55rem 0.6rem;
+  border-top: 1px solid var(--borde);
+}
+
+td[data-prueba='coste'] {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.fallo {
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  border-left: 3px solid var(--rojo);
+  background: #fdf1f0;
+  color: var(--rojo);
+}
+
+.paginacion {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+button {
+  font: inherit;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--tinta);
+  background: transparent;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+button[type='submit'] {
+  background: var(--tinta);
+  color: var(--papel);
+  justify-self: start;
+}
+
+button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+form {
+  display: grid;
+  gap: 0.35rem;
+  max-width: 28rem;
+  margin-top: 1rem;
+}
+
+label {
+  font-size: 0.8rem;
+  color: #7a6f64;
+}
+
+input,
+select {
+  font: inherit;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--borde);
+  border-radius: 6px;
+  background: #fff;
+}
+
+.aviso {
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.8rem;
+  border-left: 3px solid var(--acento);
+  background: #fff6f0;
+}
+
+.aviso.error {
+  border-color: var(--rojo);
+  background: #fdf1f0;
+  color: var(--rojo);
+}
